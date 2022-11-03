@@ -1,11 +1,27 @@
+
+#SingleInstance, Force ; Allow only one running instance of the script
+#Persistent ; Keep the script permanently running until terminated
+
+
+
 #LAlt::           _NavigateDesktop("Right")
 #LCtrl::          _NavigateDesktop("Left")
 ^Space::          _NavigateDesktop("Alwaysontop")
+
+
+
+
 
 >!Up::            _WinOpacity("Up")
 ^#WheelUp::       _WinOpacity("Up")
 >!Down::          _WinOpacity("Down")
 ^#WheelDown::     _WinOpacity("Down")    
+^#Space::         _WinOpacity("Toggle")
+
+
+
+#WheelRight::     _SnapWindow("Right")
+#WheelLeft::      _SnapWindow("Left")
 
 >^Up::            _Multimedia("Volume_Up")
 >^Down::          _Multimedia("Volume_Down")
@@ -13,9 +29,11 @@
 >^PgUp::          _Multimedia("Media_Stop")
 >^PgDn::          _Multimedia("Media_Prev")
 >^End::           _Multimedia("Media_Next")
+      
+XButton1::        _ShowHideWindows() 
+XButton2::        _ShowHideWindows("A", 0)    
 
-^+W::             _ShowHideWindows("A", 0)    
-^+!R::             _ShowHideWindows()          
+
 
 #Del::            _DeleteAllTemp()
 
@@ -45,33 +63,42 @@ _WinOpacity(opacity){
             If (ActiveTransparency= "")
 
                   ActiveTransparency= 255
-
             else {
 
-                  ActiveTransparency+= 5
+                  ActiveTransparency+= 2.5
 
                   If ActiveTransparency> 255
 
                   ActiveTransparency= 255
 
             }
+            g_opacity := ActiveTransparency
       }
-      else {
+      else if (opacity ="Down"){
             If (ActiveTransparency= "")
 
                   ActiveTransparency= 230
 
             else {
 
-                  ActiveTransparency-= 5
+                  ActiveTransparency-= 2.5
 
-            If ActiveTransparency< 5
+            If ActiveTransparency< 2.5
 
-                  ActiveTransparency= 5
+                  ActiveTransparency= 2.5
             }
+            g_opacity := ActiveTransparency
+      }
+      else {
+         While (GetKeyState("Space", "P") = 1) 
+            {
+                  WinSet, Transparent, 255, A
+	      }
+
       }
       WinSet, transparent, %ActiveTransparency%,A
       Sleep, 50 ;
+
       return
 }
 _Multimedia(name){
@@ -119,6 +146,29 @@ _DeleteAllTemp(){
       run C:\Windows\Prefetch\
       return
 }
+_SnapWindow(nav){
+      if (nav ="Right"){
+            SysGet, Mon1, Monitor, 2
+            WinGetPos, , , WW, WH, A
+            WinGetClass, class, A
+            if class != Shell_TrayWnd
+            if class != Progman
+            if class != DV2ControlHost
+            WinMove, A, , (( Mon1Right-Mon1Left - WW ) / 2) +Mon1Left, (Mon1Bottom - 30 - WH ) / 2
+            return
+      }
+      else if (nav ="Left"){
+                  SysGet, Mon1, Monitor, 1
+      WinGetPos, , , WW, WH, A
+      WinGetClass, class, A
+      if class != Shell_TrayWnd
+      if class != Progman
+      if class != DV2ControlHost
+        WinMove, A, , (( Mon1Right-Mon1Left - WW ) / 2) +Mon1Left, (Mon1Bottom - 30 - WH ) / 2
+      return
+      }
+}
+
 ; FUNCTION  CODE        LEFT              RIGHT
 ;------------------------------------------------------
 ; shift     +           <+ LShift         >+ RShift
