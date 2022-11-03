@@ -8,7 +8,8 @@ Windows Opacity Control
 
 	RAlt+Up or Ctrl+Win+WheelUp	-Windows Increase(+) Opacity
 	RAlt+Down or Ctrl+Win+WheelDown	-Windows Decrease(-) Opacity
-	Ctrl+Shift+W			-Hide Active indow
+	Ctrl+Win+Splace			-Windows Toggle Opacity
+	Ctrl+Shift+W			-Hide Active window
 	Ctrl+Shift+R			-Restore all hidden window
 Multimedia Control
 
